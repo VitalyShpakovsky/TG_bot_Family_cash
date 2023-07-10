@@ -35,25 +35,9 @@ def get_expenses(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item10 = types.KeyboardButton("Расходы за год")
     item11 = types.KeyboardButton("Расходы за месяц")
-    #item12 = types.KeyboardButton("Детальные расходы за месяц")
+    item12 = types.KeyboardButton("Детальные расходы за месяц")
     markup.add(item10, item11)
     bot.send_message(message.chat.id, 'Выберите что вам надо', reply_markup=markup)
-
-
-@bot.message_handler(content_types=['text'])
-def get_print_expenses(message):
-    if message.text == "Расходы за месяц":
-        my_mount = '0' + str(datetime.datetime.now().month)
-        result = print_expenses_mount(my_mount)
-        for i in result:
-            answer = f"{i[0]} потратил(а) за месяц {datetime.datetime.now().strftime('%B')}: {round(i[1], 2)} рублей"
-            bot.send_message(message.from_user.id, answer)
-    elif message.text == "Расходы за год":
-        my_year = str(datetime.datetime.now().year)
-        result = print_expenses_year(my_year)
-        for i in result:
-            answer = f"За {my_year} год {i[0]} потратил(а) в месяце {i[2]}: {round(i[1], 2)} рублей"
-            bot.send_message(message.from_user.id, answer)
 
 
 @bot.message_handler(commands=['add'])
@@ -67,8 +51,20 @@ def get_text_command(message):
 
 
 @bot.message_handler(content_types=['text'])
-def get_text_price(message):
-    if message.text == "Внести расход":
+def func_command(message):
+    if message.text == "Расходы за месяц":
+        my_mount = '0' + str(datetime.datetime.now().month)
+        result = print_expenses_mount(my_mount)
+        for i in result:
+            answer = f"{i[0]} потратил(а) за месяц {datetime.datetime.now().strftime('%B')}: {round(i[1], 2)} рублей"
+            bot.send_message(message.from_user.id, answer)
+    elif message.text == "Расходы за год":
+        my_year = str(datetime.datetime.now().year)
+        result = print_expenses_year(my_year)
+        for i in result:
+            answer = f"За {my_year} год {i[0]} потратил(а) в месяце {i[2]}: {round(i[1], 2)} рублей"
+            bot.send_message(message.from_user.id, answer)
+    elif message.text == "Внести расход":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item3 = types.KeyboardButton("Продукты")
         item4 = types.KeyboardButton("Коммуналка")
