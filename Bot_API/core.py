@@ -14,6 +14,7 @@ add_user = crud.ad_user()
 add_expenses = crud.ad_expenses()
 add_income = crud.ad_income()
 print_expenses_mount = crud.print_expenses()
+print_expenses_year = crud.print_year_expenses()
 db = create_db()
 category = ''
 
@@ -29,23 +30,30 @@ def get_user_name(message):
     add_user((name_user, message.from_user.id))
 
 
-@bot.message_handler(commands=['mount'])
+@bot.message_handler(commands=['stat'])
+def get_expenses(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    item10 = types.KeyboardButton("Расходы за год")
+    item11 = types.KeyboardButton("Расходы за месяц")
+    #item12 = types.KeyboardButton("Детальные расходы за месяц")
+    markup.add(item10, item11)
+    bot.send_message(message.chat.id, 'Выберите что вам надо', reply_markup=markup)
+
+
+@bot.message_handler(content_types=['text'])
 def get_print_expenses(message):
-    bot.send_message(message.from_user.id, 'Введите месяц за который хотите узнать информацию (01-12)')
-    bot.register_next_step_handler(message, get_print_expenses_mount)
-
-
-def get_print_expenses_mount(message):
-    try:
-        if 1 <= int(message.text) <= 12:
-            result = print_expenses_mount(message.text)
-            for i in result:
-                answer = f"{i[0]} израсходовал(а) за месяц {i[1]} рублей"
-                bot.send_message(message.from_user.id, answer)
-        else:
-            bot.send_message(message.from_user.id, 'Неправильный ввод. Формат ввода (01-12)')
-    except ValueError:
-        bot.send_message(message.from_user.id, 'Неправильный ввод. Формат ввода (01-12)')
+    if message.text == "Расходы за месяц":
+        my_mount = '0' + str(datetime.datetime.now().month)
+        result = print_expenses_mount(my_mount)
+        for i in result:
+            answer = f"{i[0]} потратил(а) за месяц {datetime.datetime.now().strftime('%B')}: {round(i[1], 2)} рублей"
+            bot.send_message(message.from_user.id, answer)
+    elif message.text == "Расходы за год":
+        my_year = str(datetime.datetime.now().year)
+        result = print_expenses_year(my_year)
+        for i in result:
+            answer = f"За {my_year} год {i[0]} потратил(а) в месяце {i[2]}: {round(i[1], 2)} рублей"
+            bot.send_message(message.from_user.id, answer)
 
 
 @bot.message_handler(commands=['add'])

@@ -55,14 +55,26 @@ def _add_income(value: tuple) -> None:  # добавление данных в �
     connection.commit()
 
 
-def _print_expenses_mount(mount: str) -> None:  # вывод расходов за текущий месяц
+def _print_expenses_mount(mount: str) -> list:  # вывод расходов за текущий месяц
 
     connection = sqlite3.connect('finanse.db')
     cur = connection.cursor()
     cur.execute(f"SELECT users.name_user, sum(expenses.expenses) AS exp "
                 f"from expenses JOIN users on users.user_id == expenses.user_id "
-                f"GROUP BY expenses.user_id "
+                f"GROUP BY expenses.user_id, strftime('%m', expenses.data)"
                 f"HAVING strftime('%m', expenses.data) == '{mount}'")
+    result = cur.fetchall()
+    return result
+
+
+def _print_expenses_year(year: str) -> list:  # вывод расходов за текущий год
+
+    connection = sqlite3.connect('finanse.db')
+    cur = connection.cursor()
+    cur.execute(f"SELECT users.name_user, sum(expenses.expenses) AS exp, strftime('%m', expenses.data) AS mount "
+                f"from expenses JOIN users on users.user_id == expenses.user_id "
+                f"GROUP BY expenses.user_id, strftime('%m', expenses.data), strftime('%Y', expenses.data) "
+                f"HAVING strftime('%Y', expenses.data) == '{year}'")
     result = cur.fetchall()
     return result
 
@@ -87,6 +99,10 @@ class CRUDInteface:
     @staticmethod
     def print_expenses():
         return _print_expenses_mount
+
+    @staticmethod
+    def print_year_expenses():
+        return _print_expenses_year
 
 
 crud = CRUDInteface()
