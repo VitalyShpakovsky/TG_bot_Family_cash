@@ -36,7 +36,7 @@ def get_expenses(message):
     item10 = types.KeyboardButton("Расходы за год")
     item11 = types.KeyboardButton("Расходы за месяц")
     item12 = types.KeyboardButton("Детальные расходы за месяц")
-    markup.add(item10, item11)
+    markup.add(item10, item11, item12)
     bot.send_message(message.chat.id, 'Выберите что вам надо', reply_markup=markup)
 
 
@@ -85,8 +85,11 @@ def func_command(message):
 def get_expenses(message):
     global category
     category = message.text
-    bot.send_message(message.from_user.id, 'Внесите сумму расходов')
-    bot.register_next_step_handler(message, get_add_expenses)
+    if category in ("Продукты", "Коммуналка", "Автомобиль", "Транспорт", "Хозтовары", "Одежда и обувь", "Прочие"):
+        bot.send_message(message.from_user.id, 'Внесите сумму расходов')
+        bot.register_next_step_handler(message, get_add_expenses)
+    else:
+        bot.send_message(message.from_user.id, 'Неверная категория. Попробуйте снова.')
 
 
 def get_add_expenses(message):
