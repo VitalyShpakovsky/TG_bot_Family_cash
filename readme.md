@@ -46,7 +46,7 @@
         Установка
     </h2>
         <p>Скопируйте с репозитория в выбранную директорию. Создайте файл .env куда внесите токен бота.</p>
-        <img src="Image/file_env.jpg" alt="Image">
+        <img src="Image/file_env.png" alt="Image">
   </div>
 </body>
 "# TG_bot_Family_cash" 
