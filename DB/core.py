@@ -79,6 +79,19 @@ def _print_expenses_year(year: str) -> list:  # вывод расходов за
     return result
 
 
+def _print_expenses_detail_mount(user: str, mount: str) -> list:  # вывод детальной информации о расходах за текущий месяц
+
+    connection = sqlite3.connect('finanse.db')
+    cur = connection.cursor()
+    cur.execute(f"SELECT users.name_user, expenses.name_category, sum(expenses.expenses) AS exp "
+                f"from expenses JOIN users on users.user_id == expenses.user_id "
+                f"GROUP BY strftime('%m', expenses.data), expenses.name_category, expenses.user_id "
+                f"HAVING strftime('%m', expenses.data) == '{mount}' AND expenses.user_id == '{user}' "
+                f"ORDER BY exp DESC")
+    result = cur.fetchall()
+    return result
+
+
 class CRUDInteface:
     @staticmethod
     def create():
@@ -103,6 +116,10 @@ class CRUDInteface:
     @staticmethod
     def print_year_expenses():
         return _print_expenses_year
+
+    @staticmethod
+    def print_detail_expenses():
+        return _print_expenses_detail_mount
 
 
 crud = CRUDInteface()
