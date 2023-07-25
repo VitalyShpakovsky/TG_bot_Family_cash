@@ -31,6 +31,8 @@ def _new_create_database() -> None:  # Создается база данных
     print('Table created')
 
 
+
+
 def _add_user_table(value: tuple) -> None:  # добавление данных в таблицу users
 
     connection = sqlite3.connect('finanse.db')

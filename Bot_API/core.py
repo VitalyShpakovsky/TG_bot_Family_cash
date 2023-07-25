@@ -34,10 +34,10 @@ def get_user_name(message):
 @bot.message_handler(commands=['stat'])
 def get_expenses(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    item10 = types.KeyboardButton("Расходы за год")
-    item11 = types.KeyboardButton("Расходы за месяц")
-    item12 = types.KeyboardButton("Детальные расходы за месяц")
-    markup.add(item10, item11, item12)
+    item1 = types.KeyboardButton("Расходы за год")
+    item2 = types.KeyboardButton("Расходы за месяц")
+    item3 = types.KeyboardButton("Детальные расходы за месяц")
+    markup.add(item1, item2, item3)
     bot.send_message(message.chat.id, 'Выберите что вам надо', reply_markup=markup)
 
 
@@ -45,9 +45,9 @@ def get_expenses(message):
 def get_text_command(message):
     bot.send_message(message.from_user.id, 'Welcome to our family')
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    item1 = types.KeyboardButton("Внести доход")
-    item2 = types.KeyboardButton("Внести расход")
-    markup.add(item1, item2)
+    item4 = types.KeyboardButton("Внести доход")
+    item5 = types.KeyboardButton("Внести расход")
+    markup.add(item4, item5)
     bot.send_message(message.chat.id, 'Выберите что вам надо', reply_markup=markup)
 
 
@@ -76,14 +76,16 @@ def func_command(message):
             bot.send_message(message.from_user.id, answer)
     elif message.text == "Внести расход":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        item3 = types.KeyboardButton("Продукты")
-        item4 = types.KeyboardButton("Коммуналка")
-        item5 = types.KeyboardButton("Автомобиль")
-        item6 = types.KeyboardButton("Транспорт")
-        item7 = types.KeyboardButton("Хозтовары")
-        item8 = types.KeyboardButton("Одежда и обувь")
-        item9 = types.KeyboardButton("Прочие")
-        markup.add(item3, item4, item5, item6, item7, item8, item9)
+        item6 = types.KeyboardButton("Продукты")
+        item7 = types.KeyboardButton("Коммуналка")
+        item8 = types.KeyboardButton("Автомобиль")
+        item9 = types.KeyboardButton("Транспорт")
+        item10 = types.KeyboardButton("Хозтовары")
+        item11 = types.KeyboardButton("Одежда и обувь")
+        item12 = types.KeyboardButton("Здоровье")
+        item13 = types.KeyboardButton("Дети")
+        item14 = types.KeyboardButton("Прочие")
+        markup.add(item6, item7, item8, item9, item10, item11, item12, item13, item14)
         bot.send_message(message.chat.id, 'Выберите что вам надо', reply_markup=markup)
         bot.register_next_step_handler(message, get_expenses)
     elif message.text == "Внести доход":
@@ -95,7 +97,7 @@ def func_command(message):
 def get_expenses(message):
     global category
     category = message.text
-    if category in ("Продукты", "Коммуналка", "Автомобиль", "Транспорт", "Хозтовары", "Одежда и обувь", "Прочие"):
+    if category in ("Продукты", "Коммуналка", "Автомобиль", "Транспорт", "Хозтовары", "Одежда и обувь", "Здоровье", "Дети", "Прочие"):
         bot.send_message(message.from_user.id, 'Внесите сумму расходов')
         bot.register_next_step_handler(message, get_add_expenses)
     else:
