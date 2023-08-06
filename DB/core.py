@@ -31,8 +31,6 @@ def _new_create_database() -> None:  # Создается база данных
     print('Table created')
 
 
-
-
 def _add_user_table(value: tuple) -> None:  # добавление данных в таблицу users
 
     connection = sqlite3.connect('finanse.db')
@@ -73,8 +71,11 @@ def _print_expenses_year(year: str) -> list:  # вывод расходов за
 
     connection = sqlite3.connect('finanse.db')
     cur = connection.cursor()
-    cur.execute(f"SELECT users.name_user, sum(expenses.expenses) AS exp, strftime('%m', expenses.data) AS mount "
-                f"from expenses JOIN users on users.user_id == expenses.user_id "
+    cur.execute(f"SELECT users.name_user, income.income, sum(expenses.expenses) AS exp, "
+                f"income.income - sum(expenses.expenses) AS cash, strftime('%m', expenses.data) AS mount "
+                f"from expenses "
+                f"JOIN users on users.user_id == expenses.user_id "
+                f"JOIN income on income.user_id == users.user_id "
                 f"GROUP BY expenses.user_id, strftime('%m', expenses.data), strftime('%Y', expenses.data) "
                 f"HAVING strftime('%Y', expenses.data) == '{year}'")
     result = cur.fetchall()

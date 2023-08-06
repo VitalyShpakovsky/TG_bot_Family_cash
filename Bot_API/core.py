@@ -43,7 +43,6 @@ def get_expenses(message):
 
 @bot.message_handler(commands=['add'])
 def get_text_command(message):
-    bot.send_message(message.from_user.id, 'Welcome to our family')
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item4 = types.KeyboardButton("Внести доход")
     item5 = types.KeyboardButton("Внести расход")
@@ -72,7 +71,10 @@ def func_command(message):
         my_year = str(datetime.datetime.now().year)
         result = print_expenses_year(my_year)
         for i in result:
-            answer = f"За {my_year} год {i[0]} потратил(а) в месяце {i[2]}: {round(i[1], 2)} рублей"
+            answer = f"За {my_year} год {i[0]} в месяце {i[4]}:\n" \
+                     f"Доход составил: {i[1]} рублей.\n" \
+                     f"Расход составил {round(i[2], 2)} рублей.\n" \
+                     f"Баланс: {round(i[3], 2)} рублей."
             bot.send_message(message.from_user.id, answer)
     elif message.text == "Внести расход":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
