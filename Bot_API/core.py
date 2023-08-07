@@ -16,6 +16,7 @@ add_income = crud.ad_income()
 print_expenses_mount = crud.print_expenses()
 print_expenses_year = crud.print_year_expenses()
 print_expenses_detail_mount = crud.print_detail_expenses()
+print_income_month = crud.print_income_month()
 db = create_db()
 category = ''
 
@@ -61,20 +62,26 @@ def func_command(message):
     elif message.text == "Детальные расходы за месяц":
         my_mount = '0' + str(datetime.datetime.now().month)
         result = print_expenses_detail_mount(message.from_user.id, my_mount)
+        sum_expenses = 0
         bot.send_message(message.from_user.id,
                          f"{result[0][0]} потратил в месяце {datetime.datetime.now().strftime('%B')}:")
         answer = ''
         for i in result:
             answer += f"{i[1]}: {round(i[2], 2)} рублей\n"
+            sum_expenses += round(i[2], 2)
+        bot.send_message(message.from_user.id, answer)
+        income = print_income_month(message.from_user.id, my_mount)
+        if len(income) < 1:
+            income.append([0])
+        answer = f"Доход в месяце {datetime.datetime.now().strftime('%B')} составил: {income[0][0]} рублей.\n" \
+                 f"Расход в месяце {datetime.datetime.now().strftime('%B')} составил: {sum_expenses} рублей.\n" \
+                 f"Баланс составляет: {income[0][0] - sum_expenses} рублей."
         bot.send_message(message.from_user.id, answer)
     elif message.text == "Расходы за год":
         my_year = str(datetime.datetime.now().year)
         result = print_expenses_year(my_year)
         for i in result:
-            answer = f"За {my_year} год {i[0]} в месяце {i[4]}:\n" \
-                     f"Доход составил: {i[1]} рублей.\n" \
-                     f"Расход составил {round(i[2], 2)} рублей.\n" \
-                     f"Баланс: {round(i[3], 2)} рублей."
+            answer = f"{i[0]} в {my_year} году в месяце {i[2]} потратил(а) {round(i[1], 2)} рублей."
             bot.send_message(message.from_user.id, answer)
     elif message.text == "Внести расход":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
