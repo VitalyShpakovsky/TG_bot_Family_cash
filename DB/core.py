@@ -31,8 +31,6 @@ def _new_create_database() -> None:  # Создается база данных
     print('Table created')
 
 
-
-
 def _add_user_table(value: tuple) -> None:  # добавление данных в таблицу users
 
     connection = sqlite3.connect('finanse.db')
@@ -74,7 +72,8 @@ def _print_expenses_year(year: str) -> list:  # вывод расходов за
     connection = sqlite3.connect('finanse.db')
     cur = connection.cursor()
     cur.execute(f"SELECT users.name_user, sum(expenses.expenses) AS exp, strftime('%m', expenses.data) AS mount "
-                f"from expenses JOIN users on users.user_id == expenses.user_id "
+                f"from expenses "
+                f"JOIN users on users.user_id == expenses.user_id "
                 f"GROUP BY expenses.user_id, strftime('%m', expenses.data), strftime('%Y', expenses.data) "
                 f"HAVING strftime('%Y', expenses.data) == '{year}'")
     result = cur.fetchall()
@@ -90,6 +89,19 @@ def _print_expenses_detail_mount(user: str, mount: str) -> list:  # вывод �
                 f"GROUP BY strftime('%m', expenses.data), expenses.name_category, expenses.user_id "
                 f"HAVING strftime('%m', expenses.data) == '{mount}' AND expenses.user_id == '{user}' "
                 f"ORDER BY exp DESC")
+    result = cur.fetchall()
+    return result
+
+
+def _print_income_month(user: str, mount: str) -> list:  # вывод доходов за текущий месяц
+
+    connection = sqlite3.connect('finanse.db')
+    cur = connection.cursor()
+    cur.execute(f"SELECT sum(income.income) AS inc "
+                f"from income JOIN users on users.user_id == income.user_id "
+                f"GROUP BY strftime('%m', income.data), income.user_id "
+                f"HAVING strftime('%m', income.data) == '{mount}' AND income.user_id == '{user}' "
+                f"ORDER BY inc DESC")
     result = cur.fetchall()
     return result
 
@@ -122,6 +134,10 @@ class CRUDInteface:
     @staticmethod
     def print_detail_expenses():
         return _print_expenses_detail_mount
+
+    @staticmethod
+    def print_income_month():
+        return _print_income_month
 
 
 crud = CRUDInteface()
