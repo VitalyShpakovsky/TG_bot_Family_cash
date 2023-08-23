@@ -74,8 +74,8 @@ def func_command(message):
         if len(income) < 1:
             income.append([0])
         answer = f"Доход в месяце {datetime.datetime.now().strftime('%B')} составил: {income[0][0]} рублей.\n" \
-                 f"Расход в месяце {datetime.datetime.now().strftime('%B')} составил: {sum_expenses} рублей.\n" \
-                 f"Баланс составляет: {income[0][0] - sum_expenses} рублей."
+                 f"Расход в месяце {datetime.datetime.now().strftime('%B')} составил: {round(sum_expenses, 2)} рублей.\n" \
+                 f"Баланс составляет: {round(income[0][0] - sum_expenses, 2)} рублей."
         bot.send_message(message.from_user.id, answer)
     elif message.text == "Расходы за год":
         my_year = str(datetime.datetime.now().year)
